@@ -1,5 +1,7 @@
 # How to use this repo to reproduce the paper "Yellow Vests, Pessimistic Beliefs, and Carbon Tax Aversion" (AEJ:EP)?
 
+Repository Project ID: openicpsr-128143
+
 # Authors:
 - Thomas Douenne, University of Amsterdam, Roetersstraat 11, 1018 WB Amsterdam, Netherlands (email: t.r.g.r.douenne@uva.nl)
 - Adrien Fabre, ETH Zürich (D-MTEC), Zürichberstrasse 18, 8032 Zürich, Switzerland (email: fabre.adri1@gmail.com)
@@ -31,7 +33,7 @@
 # List of files
 code/agglos.csv: data used to match town code to information on town size, provided by the survey company Bilendi
 code/correspondance-code-insee-code-postal.csv: data from Insee, matches postal code with characteristics of the town, unused
-code/df_menages_domicile_teg.csv: data used in preparation.R but not in the paper: subsample from transport survey used in companion paper
+code/df_menages_domicile_teg.csv: data used in preparation.R but not in the paper: subsample from transport survey used in companion paper. Transport survey: https://www.insee.fr/en/metadonnees/source/serie/s1277
 code/df_objective_gains.csv: distribution of respondents objective gains plotted in section 3 and procuded by consistency_beliefs_losses.py
 code/df_objective_gains_inelastic.csv: distribution of respondents objective gains assuming inelastic demand, plotted in section 3 and procuded by consistency_beliefs_losses.py
 code/df_subjective_gains.csv: distribution of respondents subjective gains plotted in section 3 and procuded by consistency_beliefs_losses.py
@@ -60,9 +62,9 @@ model_reforms_data/prepare_dataset.py: prepares the dataset (selects variables, 
 model_reforms_data/prepare_dataset_housing.py: prepares the dataset for housing energies only (selects variables, translates names to English, inflates sectoral expenditures)
 model_reforms_data/regression_feedback.py: regress households' expenditures in housing energies on househlds' characteristics
 model_reforms_data/standardize_data_bdf_ptc.py: defines functions to compare new survey with official statistics (in particular subjective vs objective gains), functions are used by consistency_beliefs_losses.py
-model_reforms_data/data_menages.csv: data to be used in prepare_dataset.py : comes from the matching of the consumer and transport surveys (Douenne, 2020, The Energy Journal) (selected variables)
-model_reforms_data/data_matching_bdf.csv: data to be used in prepare_dataset_housing.py : comes from the French consumer survey (selected variables)
-model_reforms_data/data_matching_enl.csv: data to be used in prepare_dataset_housing.py : comes from the French housing survey (selected variables)
+model_reforms_data/data_menages.csv: data to be used in prepare_dataset.py : comes from the matching of the consumer and transport surveys done in Douenne (2020, The Energy Journal). (selected variables). Consumer survey: https://www.insee.fr/en/metadonnees/source/serie/s1194 ; Transport survey: https://www.insee.fr/en/metadonnees/source/serie/s1277
+model_reforms_data/data_matching_bdf.csv: data to be used in prepare_dataset_housing.py : comes from the French consumer survey (selected variables). Consumer survey: https://www.insee.fr/en/metadonnees/source/serie/s1194
+model_reforms_data/data_matching_enl.csv: data to be used in prepare_dataset_housing.py : comes from the French housing survey (selected variables). Housing survey: https://www.insee.fr/en/metadonnees/source/serie/s1004
 model_reforms_data/prediction expenditures.csv: data on objective gains and losses produced in test_predictions_ols_regression_with_transports.py. and used to assess precision of our prediction
 model_reforms_data/prediction expenditures (2).csv: alternative specification for the prediction, called in code/preparation.R but unused in the paper
 model_reforms_data/prediction housing expenditures.csv: same thing but specific to housing energies, called in code/preparation.R but unused in the paper
@@ -71,11 +73,11 @@ model_reforms_data/prediction housing expenditures (2).csv: same thing but speci
 Questionnaire/: files used for questionnaire on Qualtrics
 
 consistency_beliefs_losses.py: compares new survey with official statistics (in particular subjective vs objective gains) and produces figures C.3 and df_objective_gains.csv, df_objective_gains_inelastic.csv, and df_subjective_gains.csv
-df_donor_enl.csv: data produced by test_predictions_ols_regression_with_transports.py from housing survey and used for the statistical matching (alternative method to predict winners and losers)
+df_donor_enl.csv: data produced by test_predictions_ols_regression_with_transports.py from housing survey and used for the statistical matching (alternative method to predict winners and losers). Housing survey: see https://www.insee.fr/en/metadonnees/source/serie/s1004
 df_objective_gains.csv: distribution of respondents objective gains plotted in section 3 and procuded by consistency_beliefs_losses.py
 df_objective_gains_inelastic.csv: distribution of respondents objective gains assuming inelastic demand, plotted in section 3 and procuded by consistency_beliefs_losses.py
 df_subjective_gains.csv: distribution of respondents subjective gains plotted in section 3 and procuded by consistency_beliefs_losses.py
-df_receiver_bdf.csv: data produced by test_predictions_ols_regression_with_transports.py from consumer survey and used for the statistical matching (alternative method to predict winners and losers)
+df_receiver_bdf.csv: data produced by test_predictions_ols_regression_with_transports.py from consumer survey and used for the statistical matching (alternative method to predict winners and losers). Consumer survey: https://www.insee.fr/en/metadonnees/source/serie/s1194
 LICENSE: License to use the present repository
 test_predictions_binary_models.py: tests accuracy of our respondent-specific win/lose prediction for alternative specifications and methods
 test_predictions_ols_regression_with_transports.py: tests accuracy of our respondent-specific estimation of the tax incidence
