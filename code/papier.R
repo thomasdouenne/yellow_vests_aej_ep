@@ -5,8 +5,8 @@
 #     R environment with all the data prepared (.RData) and python files for complementary computations
 
 source("packages_functions.R")
-load("after_papier.RData") # This loads the .RData generated after executing preparation.R and papier.R, so that one can run any line of this file almost independently (sometimes variables like taxe_efficace.hat or non_perdant should be redefined using the nearest above line that defines it though)
-# load("after_preparation.RData") # This loads the .RData generated after executing preparation.R: it contains the dataframe (s) but lacks the definition of some objects (such as variables_reg_self_interest)
+# load("after_papier.RData") # This loads the .RData generated after executing preparation.R and papier.R, so that one can run any line of this file almost independently (sometimes variables like taxe_efficace.hat or non_perdant should be redefined using the nearest above line that defines it though)
+load("after_preparation.RData") # This loads the .RData generated after executing preparation.R: it contains the dataframe (s) but lacks the definition of some objects (such as variables_reg_self_interest)
 
 ##### 1 Introduction #####
 decrit(s$taxe_approbation, miss=T, weights = s$weight)
@@ -56,6 +56,8 @@ decrit(s$simule_gain > s$gain, weights = s$weight) # 89%
 decrit(s$simule_gain_inelastique - s$gain > 0, weights = s$weight) # 77%
 
 # Figure 3.1: CDF of subjective vs. objective gain (including in the inelastic case)
+mar_old <- par()$mar
+cex_old <- par()$cex
 par(mar = c(3.4, 3.4, 1.1, 0.1), cex=1.5)
 # (a) transport
 cdf_transport <- Ecdf(objective_gains$transport)
@@ -226,6 +228,7 @@ formula_effect_feedback_4 <- as.formula(paste("gagnant_feedback_categorie=='Gagn
 reg_effect_feedback_4 <- lm(formula_effect_feedback_4, data=s, subset=variante_taxe_info=='f' & abs(simule_gain) < 50, weights = s$weight, na.action='na.exclude')
 summary(reg_effect_feedback_4)
 
+# Table 4.2
 table_effect_feedback <- stargazer(reg_effect_feedback_1, reg_effect_feedback_2, reg_effect_feedback_3, reg_effect_feedback_4,
       title="Effect feedback on belief of winning.", star.cutoffs = NA, omit.table.layout = 'n', #star.cutoffs = c(0.1, 1e-5, 1e-30),
       covariate.labels = c("Predicted winner ($\\widehat{\\Gamma}$)", "Initial tax Acceptance ($A^0$)", "Yellow Vests supporter", "$\\widehat{\\Gamma} \\times A^0$", "$\\widehat{\\Gamma} \\times$ Yellow Vests supporter", "$\\widehat{\\Gamma} \\times G$"),
@@ -511,7 +514,7 @@ length(c(ttests_characs, unlist(ttests_quotas))) # 42
 # Figure C.1
 ggplot(data=fit, aes(x=gain)) + theme_bw() + stat_smooth(method = "auto", aes(y=predicted_winner, outfit=fitted_proba<<-..y..), se=F) + ylim(c(0,1)) +  # rerun with outfit=fitted_x<<-..x.. to get value at +100. 0.66*fitted_proba[71]+0.34*fitted_proba[70] = 96%
    xlab("Objective gain per consumption unit (density in black)") + ylab("Probability of correctly predicting gain (in blue)") + xlim(c(-250, 200)) + 
-   geom_density(aes(y=..scaled..), bw=30) + geom_vline(xintercept=0, col='grey')
+   geom_density(aes(y=..scaled..), bw=30) + geom_vline(xintercept=0, col='grey') 
 
 # Figure C.2
 mar_old <- par()$mar
@@ -1052,7 +1055,7 @@ write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{13.5cm}{\\linespr
 
 
 ##### Appendix K. Relation between support and belief in progressivity #####
-# Table J.1
+# Table K.1
 variables_reg_prog <- c("Revenu", "Revenu2", "Revenu_conjoint", "Revenu_conjoint2", "single", "Simule_gain", "Simule_gain2", variables_demo)
 variables_reg_prog <- variables_reg_prog[!(variables_reg_prog %in%
     c("revenu", "rev_tot", "age", "age_65_plus", "fioul", "gaz", "hausse_chauffage", "hausse_essence", "hausse_diesel", "hausse_depenses", "simule_gain"))]
@@ -1242,3 +1245,4 @@ cor(s$mauvaise_qualite > 0, s$gain) # -0.007
 
 # clean heaviest objects
 rm(list=ls()[grepl("tsls|ols|logit_|iv_|reg_|iv._", ls()) & !grepl("variables", ls())])
+

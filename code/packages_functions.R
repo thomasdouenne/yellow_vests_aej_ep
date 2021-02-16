@@ -12,7 +12,13 @@ package('tidyverse')
 # package("rms") # TODO
 package('pwr')
 package("foreign")
-package("memisc")
+package("remotes")
+package("installr")
+if (installed.packages()["memisc", "Version"] != "0.99.22") {
+  uninstall.packages("memisc")
+  install_version("memisc", version = "0.99.22", repos = "http://cran.r-project.org") }
+library(memisc)
+# package("memisc")
 package("DT")
 package("pastecs")
 package("lsr")
