@@ -82,3 +82,37 @@ LICENSE: License to use the present repository
 test_predictions_binary_models.py: tests accuracy of our respondent-specific win/lose prediction for alternative specifications and methods
 test_predictions_ols_regression_with_transports.py: tests accuracy of our respondent-specific estimation of the tax incidence
 utils.py: defines useful functions to plot graphs
+
+# Data and Code Availability Statements
+## Authors' Survey Data
+Fully available. 
+URL: https://github.com/thomasdouenne/yellow_vests_aej_ep/tree/main/code/survey_prepared.csv
+
+## Douenne (2020)
+Fully available. 
+URL: https://github.com/thomasdouenne/yellow_vests_aej_ep/tree/main/model_reforms_data/data_menages.csv
+
+## Insee Budget de Famille (BdF 2011)
+Fully available to researchers upon completion of a form.
+Presentation of the survey: https://www.insee.fr/en/metadonnees/source/serie/s1194
+URL: http://www.progedo-adisp.fr/enquetes/XML/lil.php?lil=lil-0831
+
+## Insee Enquete Nationale Transports et Deplacements (ENTD 2008)
+Fully available to researchers upon completion of a form.
+Presentation of the survey: https://www.insee.fr/en/metadonnees/source/serie/s1277
+URL: http://www.progedo-adisp.fr/enquetes/XML/lil.php?lil=lil-0634
+
+## Insee Enquete Logement (EL 2013)
+Fully available to researchers upon completion of a form.
+Presentation of the survey: https://www.insee.fr/en/metadonnees/source/serie/s1004
+URL: http://www.progedo-adisp.fr/enquetes/XML/lil.php?lil=lil-1022
+
+## Insee Enquête sur les Revenus Socio-Fiscaux (ERFS 2014)
+Fully available to researchers upon completion of a form.
+URL: http://www.progedo-adisp.fr/enquetes/XML/lil.php?lil=lil-1177
+
+## National Accounts
+
+## CEREN
+Fully available. It consists of the following quote: “3,4 millions de résidences principales sont encore chauffées au fioul en France. Cela représente 12 % des foyers”.
+URL: https://www.lesechos.fr/industrie-services/energie-environnement/le-chauffage-au-fioul-devient-de-plus-en-plus-cher-147372
