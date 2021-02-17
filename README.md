@@ -44,6 +44,7 @@ code/quotas.xlsx: provides objectives quotas from Insee, information obtained fr
 code/rev_i_erfs2014.csv: data from survey ERFS used to get information on actual income distribution of the French population (selected variables)
 code/survey.csv: raw data from Qualtrics survey
 code/survey_prepared.csv: data from Qualtrics survey after preparation
+conso-eff-function.xls: data from National accounts used to inflate our figures.
 
 images/: different images generated from papier.R, also includes images from companion paper
 
@@ -110,6 +111,9 @@ Fully available to researchers upon completion of a form.
 URL: http://www.progedo-adisp.fr/enquetes/XML/lil.php?lil=lil-1177
 
 ## National Accounts
+Fully available. 
+File: conso-eff-function.xls
+URL: https://www.insee.fr/fr/statistiques/3547386?sommaire=3547646#titre-bloc-20
 
 ## CEREN
 Fully available. It consists of the following quote: “3,4 millions de résidences principales sont encore chauffées au fioul en France. Cela représente 12 % des foyers”.
