@@ -88,6 +88,7 @@ utils.py: defines useful functions to plot graphs
 ## Authors' Survey Data
 Fully available. 
 URL: https://github.com/thomasdouenne/yellow_vests_aej_ep/tree/main/code/survey_prepared.csv
+DOI: http://doi.org/10.3886/E128143V2.
 
 ## Douenne (2020)
 Fully available. 
