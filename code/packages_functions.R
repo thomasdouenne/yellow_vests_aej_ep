@@ -13,8 +13,10 @@ package('tidyverse')
 package('pwr')
 package("foreign")
 package("remotes")
-package("installr")
-if (installed.packages()["memisc", "Version"] != "0.99.22") {
+if (!("memisc" %in% installed.packages())) {
+  install_version("memisc", version = "0.99.22", repos = "http://cran.r-project.org")
+} else if ("memisc" %in% installed.packages() & installed.packages()["memisc", "Version"] != "0.99.22") {
+  package("installr") # /!\ Beware, installr only works on Windows. On other platform, uninstall "memisc" manually.
   uninstall.packages("memisc")
   install_version("memisc", version = "0.99.22", repos = "http://cran.r-project.org") }
 library(memisc)
