@@ -1702,3 +1702,4 @@ variables_toutes <- c(variables_approbation, variables_qualite, variables_aleato
                       variables_comportement_CC, variables_schiste, variables_depenses_publiques)
 variables_mobilite <- c("transports_avis", "transports_frequence", "transports_travail")
 
+save.image("after_preparation.RData")

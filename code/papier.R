@@ -109,7 +109,7 @@ formula_bias_bis <- as.formula(paste("abs(simule_gain - gain) > 110 ~ taxe_appro
 reg_bias_bis <- lm(formula_bias_bis, data=s, weights=s$weight)
 summary(reg_bias_bis)
 
-Table_heterogenous_bias <- stargazer(reg_bias, logit_bias, reg_bias_bis,
+Table_heterogenous_bias <- stargazer(reg_bias, logit_bias, reg_bias_bis, out = "../tables/bias.tex",
                                      title="Determinants of bias in subjective gains", model.names = T, model.numbers = FALSE, #star.cutoffs = c(0.1, 1e-5, 1e-30), # "Diploma: Bachelor or above", 
                                      covariate.labels = c("Initial tax: PNR (I don't know)", "Initial tax: Approves",
                                                           "Yellow Vests: PNR","Yellow Vests: understands","Yellow Vests: supports", "Yellow Vests: is part",
@@ -122,9 +122,9 @@ Table_heterogenous_bias <- stargazer(reg_bias, logit_bias, reg_bias_bis,
                                      se = list(NULL, logit_bias_margins[,2], NULL),
                                      add.lines = list(c("Controls: Socio-demo, political leaning", "\\checkmark", "\\checkmark", "\\checkmark")),
                                      no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser", "ll", "aic"), label="tab:bias")
-write_clip(gsub('\\end{table}', ' } {\\footnotesize \\parbox[t]{12cm}{\\linespread{1.2}\\selectfont \\textsc{Note:}  Standard errors are reported in parentheses. For logit, average marginal effects are reported and not coefficients. Omitted variables are \\textit{Yellow Vests: opposes}; \\textit{Left-right: Extreme-left}. The list of controls can be found in Appendix \\ref{set_controls}. A large bias is defined as a difference between subjective ($g$) and objectively estimated ($\\hat{\\gamma})$ net gain larger than 110\\euro{}/year per c.u. }}  \\end{table} ',
-                gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@',
-                                                       Table_heterogenous_bias, fixed=TRUE), fixed=TRUE), collapse=' ')
+# write_clip(gsub('\\end{table}', ' } {\\footnotesize \\parbox[t]{12cm}{\\linespread{1.2}\\selectfont \\textsc{Note:}  Standard errors are reported in parentheses. For logit, average marginal effects are reported and not coefficients. Omitted variables are \\textit{Yellow Vests: opposes}; \\textit{Left-right: Extreme-left}. The list of controls can be found in Appendix \\ref{set_controls}. A large bias is defined as a difference between subjective ($g$) and objectively estimated ($\\hat{\\gamma})$ net gain larger than 110\\euro{}/year per c.u. }}  \\end{table} ',
+#                 gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@',
+#                 Table_heterogenous_bias, fixed=TRUE), fixed=TRUE), collapse=' ')
 
 # False discovery rate at 5%
 pvalues_reg_bias <- summary(reg_bias)$coefficients[2:length(summary(reg_bias)$coefficients[,4]),4]
@@ -228,7 +228,7 @@ formula_effect_feedback_4 <- as.formula(paste("gagnant_feedback_categorie=='Gagn
 reg_effect_feedback_4 <- lm(formula_effect_feedback_4, data=s, subset=variante_taxe_info=='f' & abs(simule_gain) < 50, weights = s$weight, na.action='na.exclude')
 summary(reg_effect_feedback_4)
 
-# Table 4.2
+# Table 4.2 
 table_effect_feedback <- stargazer(reg_effect_feedback_1, reg_effect_feedback_2, reg_effect_feedback_3, reg_effect_feedback_4,
       title="Effect feedback on belief of winning.", star.cutoffs = NA, omit.table.layout = 'n', #star.cutoffs = c(0.1, 1e-5, 1e-30),
       covariate.labels = c("Predicted winner ($\\widehat{\\Gamma}$)", "Initial tax Acceptance ($A^0$)", "Yellow Vests supporter", "$\\widehat{\\Gamma} \\times A^0$", "$\\widehat{\\Gamma} \\times$ Yellow Vests supporter", "$\\widehat{\\Gamma} \\times G$"),
@@ -240,8 +240,9 @@ table_effect_feedback <- stargazer(reg_effect_feedback_1, reg_effect_feedback_2,
                # c("\\quad and interaction ($G \\times \\widehat{\\Gamma}$)", "", "", "", ""),
                c("Sub-sample", "$\\left| \\widehat{\\gamma}\\right|<50$", "", "$\\left| \\widehat{\\gamma}\\right|<50$", "$\\left| \\widehat{\\gamma}\\right|<50$")),
       no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser"), label="tab:effect_feedback")
-write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Standard errors are reported in parentheses. The list of controls can be found in Appendix \\ref{set_controls}.} }\\end{table}', 
-                gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', table_effect_feedback, fixed=TRUE), fixed=T), collapse=' ')
+cat(table_effect_feedback, sep = '\n', file = "../tables/effect_feedback.tex")
+# write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Standard errors are reported in parentheses. The list of controls can be found in Appendix \\ref{set_controls}.} }\\end{table}', 
+#                 gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', table_effect_feedback, fixed=TRUE), fixed=T), collapse=' ')
 
 
 
@@ -319,7 +320,7 @@ iv_si4 <- summary(ivreg(as.formula(paste("taxe_feedback_approbation!='Non' ~ tax
 
 f_stats_si <- sprintf("%.1f", round(c(iv_si1$diagnostics[1,3], iv_si2$diagnostics[1,3], iv_si4$diagnostics[1,3]), 1))
 
-# Table 5.1: first-stage SI
+# Table 5.1: first-stage SI 
 Table_si1 <- stargazer(tsls1_si1, tsls1_si2, tsls1_si4, 
                     title="First stage regressions results for self-interest", #omit.table.layout = 'n', star.cutoffs = NA,
                     covariate.labels = c("Transfer to respondent ($T_1$)", "Transfer to spouse ($T_2$)",
@@ -335,10 +336,11 @@ Table_si1 <- stargazer(tsls1_si1, tsls1_si2, tsls1_si4,
                                   c("Sub-sample", "[p10; p60]", "", "$\\left| \\widehat{\\gamma}\\right|<50$"),
                                   c("Effective F-Statistic", f_stats_si)),
                     no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser"), label="first_stage_private_benefits")
-write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} In (1,2), the random eligibility to the dividend (conditionally on income) is used as source of exogenous variation in the belief. In (4), the discontinuity in the win/lose feedback when the net gain switches from negative to positive is used. Column numbers correspond to second stage results, Table \\vref{results_private_benefits}.}} \\end{table}', gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', 
-                                                       Table_si1, fixed=TRUE), fixed=TRUE), collapse=' ')
+cat(Table_si1, sep = '\n', file = "../tables/first_stage_private_benefits.tex")
+# write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} In (1,2), the random eligibility to the dividend (conditionally on income) is used as source of exogenous variation in the belief. In (4), the discontinuity in the win/lose feedback when the net gain switches from negative to positive is used. Column numbers correspond to second stage results, Table \\vref{results_private_benefits}.}} \\end{table}', gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', 
+#                                                        Table_si1, fixed=TRUE), fixed=TRUE), collapse=' ')
 
-# Table 5.2: second-stage SI
+# Table 5.2: second-stage SI 
 Table_si2 <- stargazer(tsls2_si1, tsls2_si2, ols_si3, tsls2_si4, 
                     title="Effect of self-interest on acceptance", column.labels = c("\\textit{IV: random target/eligibility}", "$OLS$", "\\textit{IV: discontinuity in feedback}"), column.separate = c(2,1,1),
                     dep.var.labels = c("Targeted Dividend ($A^T$)", "After Feedback ($A^F$)"), dep.var.caption = "Acceptance (``Yes'' or ``Don't know'' to policy support)", header = FALSE,
@@ -353,8 +355,9 @@ Table_si2 <- stargazer(tsls2_si1, tsls2_si2, ols_si3, tsls2_si4,
                       c("Sub-sample", "[p10; p60]", "", "", "$\\left| \\widehat{\\gamma}\\right|<50$"),
                       c("Effective F-Statistic", f_stats_si[1:2], "", f_stats_si[3])),
                     no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser", "ll", "aic"), label="results_private_benefits")
-write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Standard errors are reported in parentheses. The list of controls can be found in Appendix \\ref{set_controls}. The source of exogenous variation in the belief used in first-stages for the targeted dividend is the random assignment of the income threshold, which determines eligibility to the dividend. The first-stage for the non-targeted dividend exploits instead the discontinuity in the win/lose feedback when the net gain switches from negative to positive.} }\\end{table}', 
-                    gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_si2, fixed=TRUE), fixed=T), collapse=' ')
+cat(Table_si2, sep = '\n', file = "../tables/results_private_benefits.tex")
+# write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Standard errors are reported in parentheses. The list of controls can be found in Appendix \\ref{set_controls}. The source of exogenous variation in the belief used in first-stages for the targeted dividend is the random assignment of the income threshold, which determines eligibility to the dividend. The first-stage for the non-targeted dividend exploits instead the discontinuity in the win/lose feedback when the net gain switches from negative to positive.} }\\end{table}', 
+#                     gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_si2, fixed=TRUE), fixed=T), collapse=' ')
 
 
 ## 5.2 Environmental effectiveness
@@ -414,7 +417,7 @@ liml_ee1_check
 f_stats_ee <- sprintf("%.1f", round(c(iv_ee1$diagnostics[1,3], iv_eea4$diagnostics[1,3]), 1))
 
 # Table 5.3: first-stage EE
-Table_ee1 <- stargazer(tsls1_ee1, tsls1_eea4,
+Table_ee1 <- stargazer(tsls1_ee1, tsls1_eea4, out = "../tables/first_stage_environmental_effectiveness.tex",
                        title="First stage regressions results for environmental effectiveness", #star.cutoffs = c(0.1, 1e-5, 1e-30),
                        # "Info on Climate Change and/or on Particulates", "Info on Climate Change only", "Info on Particulates only"
                        covariate.labels = c("Info on Environmental Effectiveness ($Z_{E}$)",  
@@ -426,8 +429,8 @@ Table_ee1 <- stargazer(tsls1_ee1, tsls1_eea4,
                                         c("\\quad incomes, estimated gains", "", ""),
                                         c("Effective F-Statistic", f_stats_ee)), 
                        no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser"), label="first_stage_environmental_effectiveness")
-write_clip(gsub('\\end{table}', '} {\\footnotesize \\textsc{Note:} In column names, (A4) refer to columns of alternative second stages in Table \\ref{tab:eea}. The information randomly displayed about climate change ($Z_{CC}$) and the effectiveness of carbon taxation ($Z_{E}$) are used as sources of exogenous variation in the belief. We chose the set of instruments that maximizes the effective F-statistics. Our specification is well-founded as the Sargan test does not reject the validity of our over-identification restrictions (p-value of 0.93). See discussion in the main text, Section \\vref{subsec:motive_ee}.} \\end{table}', gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', 
-                                                       Table_ee1, fixed=TRUE), fixed=TRUE), collapse=' ')
+# write_clip(gsub('\\end{table}', '} {\\footnotesize \\textsc{Note:} In column names, (A4) refer to columns of alternative second stages in Table \\ref{tab:eea}. The information randomly displayed about climate change ($Z_{CC}$) and the effectiveness of carbon taxation ($Z_{E}$) are used as sources of exogenous variation in the belief. We chose the set of instruments that maximizes the effective F-statistics. Our specification is well-founded as the Sargan test does not reject the validity of our over-identification restrictions (p-value of 0.93). See discussion in the main text, Section \\vref{subsec:motive_ee}.} \\end{table}', gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', 
+#                                                        Table_ee1, fixed=TRUE), fixed=TRUE), collapse=' ')
 
 # Table 5.4: second-stage EE
 Table_ee2 <- stargazer(tsls2_ee1, ols_ee2, tsls2_ee3, title="Effect of believing in environmental effectiveness on approval", star.cutoffs = NA, omit.table.layout = 'n',
@@ -439,10 +442,10 @@ Table_ee2 <- stargazer(tsls2_ee1, ols_ee2, tsls2_ee3, title="Effect of believing
                        add.lines = list(c("Instruments: info E.E. \\& C.C. ", "\\checkmark ", "", "\\checkmark "),
                                         c("Controls: Socio-demo, other motives, ", "\\checkmark ", "\\checkmark  ", "\\checkmark "),
                                         c("\\quad incomes, estimated gains", "", "", ""),
-                                        c("Effective F-Statistic", f_stats_ee[1], "", f_stats_ee[1])), 
+                                        c("Effective F-Statistic", f_stats_ee[1], "", f_stats_ee[1])), out = "../tables/ee.tex",
                        no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser", "ll", "aic"), label="tab:ee")
-write_clip(gsub('\\end{table}', "} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Standard errors are reported in parentheses. The list of controls can be found in Appendix \\ref{set_controls}, and first stage results in Table \\vref{first_stage_environmental_effectiveness}. The dependent variable corresponds to either initial approval (answer ``Yes'' to support of the policy) or acceptance (answer not ``No''). The first stage exploits the information randomly displayed about climate change (C.C.) and the effectiveness of carbon taxation (E.E.) as exogenous instruments.}}\\end{table}", 
-                    gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_ee2, fixed=TRUE), fixed=TRUE), collapse=' ')
+# write_clip(gsub('\\end{table}', "} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Standard errors are reported in parentheses. The list of controls can be found in Appendix \\ref{set_controls}, and first stage results in Table \\vref{first_stage_environmental_effectiveness}. The dependent variable corresponds to either initial approval (answer ``Yes'' to support of the policy) or acceptance (answer not ``No''). The first stage exploits the information randomly displayed about climate change (C.C.) and the effectiveness of carbon taxation (E.E.) as exogenous instruments.}}\\end{table}", 
+#                     gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_ee2, fixed=TRUE), fixed=TRUE), collapse=' ')
 
 # Note: of Table 5.4
 summary(ivreg(as.formula(paste("taxe_approbation=='Oui' ~ ", paste(variables_reg_ee, collapse = ' + '), "+ (taxe_efficace=='Oui') | ", paste(variables_reg_ee, collapse = ' + '), 
@@ -546,15 +549,15 @@ formula_f <- as.formula(paste("taxe_efficace!='Non' ~ Elasticite_fuel + ", paste
 elast_f_controls <- lm(formula_f, data=s, subset = variante_partielle=='f', weights = s$weight)
 summary(elast_f_controls)
 
-Table_elast <- stargazer(elas_c, elas_f, elast_c_controls, elast_f_controls, 
+Table_elast <- stargazer(elas_c, elas_f, elast_c_controls, elast_f_controls, out = "../tables/elasticities_effectiveness.tex",
         title="Effect of subjective elasticities on perceived environmental effectiveness", model.names = FALSE, #star.cutoffs = c(0.1, 1e-5, 1e-30),
         covariate.labels = c("Price elasticity: Housing", "Price elasticity: Transports", "Income","Size of town", "Age","Domestic fuel", "Natural gas", "Diesel"), 
         dep.var.labels = c("Environmental effectiveness: not ``No''"), dep.var.caption = "", header = FALSE,
         keep = c("Elasticite"),
         add.lines = list(c("Controls: Socio-demo, energy", "", "", "\\checkmark  ", "\\checkmark")),
         no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser", "ll", "aic"), label="table:elasticities_effectiveness")
-write_clip(gsub('\\end{table}', '} {\\footnotesize \\textsc{Note:} See discussion in the main text, Section \\vref{subsec:perception_ee}.} \\end{table}', gsub('\\begin{tabular}{@', 
-                                                       '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_elast, fixed=TRUE), fixed=TRUE), collapse=' ')
+# write_clip(gsub('\\end{table}', '} {\\footnotesize \\textsc{Note:} See discussion in the main text, Section \\vref{subsec:perception_ee}.} \\end{table}', gsub('\\begin{tabular}{@', 
+#                                                        '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_elast, fixed=TRUE), fixed=TRUE), collapse=' ')
 
 
 ## D.2 Self-interest
@@ -634,7 +637,7 @@ formula_update_ee_bis <- as.formula(paste("taxe_efficace=='Oui' ~ apres_modifs +
 reg_update_ee4 <- lm(formula_update_ee_bis, data=s, weights = s$weight, na.action='na.exclude')
 summary(reg_update_ee4)
 
-Table_update_ee <- stargazer(reg_update_ee1, reg_update_ee2, logit_update_ee3, reg_update_ee4,
+Table_update_ee <- stargazer(reg_update_ee1, reg_update_ee2, logit_update_ee3, reg_update_ee4, out = "../tables/update_ee.tex",
                              title="Effect of primings on beliefs about environmental effectiveness", # "Diploma: Bachelor or above",
                              covariate.labels = c("Info on Environmental Effectiveness ($Z_{E}$)",
                                                   "Info on Climate Change ($Z_{CC}$)", "Info on Particulate Matter ($Z_{PM}$)", "$Z_{CC} \\times Z_{PM}$"),
@@ -645,8 +648,8 @@ Table_update_ee <- stargazer(reg_update_ee1, reg_update_ee2, logit_update_ee3, r
                              column.labels = c("(1)", "(2)", "(3)", "(4)"), model.numbers = FALSE,
                              add.lines = list(c("Controls: Socio-demo ", "", "\\checkmark ", "\\checkmark ", "\\checkmark ")),
                              no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser", "ll", "aic"), label="tab:update_ee")
-write_clip(gsub('\\end{table}', '} \\end{table}', gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@',
-                                                       Table_update_ee, fixed=TRUE), fixed=TRUE), collapse=' ')
+# write_clip(gsub('\\end{table}', '} \\end{table}', gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@',
+#                                                        Table_update_ee, fixed=TRUE), fixed=TRUE), collapse=' ')
 
 ## D.4 Progressivity
 # Table D.6 
@@ -658,15 +661,16 @@ formula_ols_prog_3 <- as.formula(paste("progressivite!='Non' ~  info_progressivi
 ols_prog_3 <- lm(formula_ols_prog_3, data=s, weights=s$weight)
 summary(ols_prog_3)
 
-prog <- stargazer(ols_prog_1, ols_prog_2, ols_prog_3, title="Effect of information on perceived progressivity", #star.cutoffs = c(0.1, 1e-5, 1e-30),
+prog <- stargazer(ols_prog_1, ols_prog_2, ols_prog_3, title="Effect of information on perceived progressivity", #star.cutoffs = c(0.1, 1e-5, 1e-30), 
                                covariate.labels = c("Constant", "Information on progressivity ($Z_P$)", "Large bias $(\\left|\\widehat{\\gamma}-g\\right|>110)$",
                                                   "Interaction $Z_P \\times (\\left|\\widehat{\\gamma}-g\\right|>110)$"),
                                keep = c("Constant", "info_progressiviteTRUE$", "biais_sur"),
                                dep.var.labels = "Progressivity: not ``No'' ($P$)", dep.var.caption = "", header = FALSE,
-                               add.lines = list(c("Controls: Socio-demo, politics ", "", "", "\\checkmark ")),
+                               add.lines = list(c("Controls: Socio-demo, politics ", "", "", "\\checkmark ")), 
                                no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser"), label="tab:prog")
-write_clip(gsub('\\end{table}', ' } {\\footnotesize \\textsc{Note:} See discussion in the main text, Section \\vref{subsec:persistence-prog}.} \\end{table} ', gsub('\\begin{tabular}{@',
-                                                         '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', prog, fixed=TRUE), fixed=TRUE), collapse=' ')
+cat(prog, sep = '\n', file = "../tables/prog.tex")
+# write_clip(gsub('\\end{table}', ' } {\\footnotesize \\textsc{Note:} See discussion in the main text, Section \\vref{subsec:persistence-prog}.} \\end{table} ', gsub('\\begin{tabular}{@',
+#                                                          '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', prog, fixed=TRUE), fixed=TRUE), collapse=' ')
 
 
 ##### Appendix E. Additional specifications #####
@@ -769,8 +773,8 @@ iv_sia6 # used for effective F-Stat
 
 f_stats_sia <- sprintf("%.1f", round(c(iv_sia1$diagnostics[1,3], iv_sia2$diagnostics[1,3], iv_sia3$diagnostics[1,3], iv_sia4$diagnostics[1,3], iv_sia5$diagnostics[1,3], iv_sia6$diagnostics[1,3]), 1))
 
-Table_additional_res <- stargazer(tsls2_sia1, tsls2_sia2, tsls2_sia3, tsls2_sia4, tsls2_sia5, tsls2_sia6,
-                                  title="Effect of self-interest on acceptance: second stages of alternative specifications", #star.cutoffs = c(0.1, 1e-5, 1e-30),
+Table_additional_res <- stargazer(tsls2_sia1, tsls2_sia2, tsls2_sia3, tsls2_sia4, tsls2_sia5, tsls2_sia6, 
+                                  title="Effect of self-interest on acceptance: second stages of alternative specifications", #star.cutoffs = c(0.1, 1e-5, 1e-30), 
                                   covariate.labels = c("Believes wins", "Believes does not lose", "Initial tax Acceptance ($A^0$)"), model.names = FALSE,
                                   dep.var.labels = c("Acceptance", "Approval", "Acceptance", "Approval"), #omit.table.layout = 'n', star.cutoffs = NA,
                                   dep.var.caption = c("\\multicolumn{3}{c}{Targeted Dividend ($A^T$)} & \\multicolumn{3}{c}{After Feedback ($A^F$)"), header = FALSE,
@@ -783,8 +787,9 @@ Table_additional_res <- stargazer(tsls2_sia1, tsls2_sia2, tsls2_sia3, tsls2_sia4
                                     c("Sub-sample: [p10; p60] ($A^T$) or $\\left| \\widehat{\\gamma}\\right|<50$ ($A^F$)", "\\checkmark ", "\\checkmark  ", "\\checkmark ", "\\checkmark", "\\checkmark ", "\\checkmark"),
                                     c("Effective F-Statistic", f_stats_sia)),
                                   no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser", "ll", "aic"), label="tab:alternative_si")
-write_clip(sub("\\multicolumn{6}{c}{", "", gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} See results of main specifications, Table \\vref{results_private_benefits}. As in the latter Table, the source of exogenous variation in the belief used in first-stages for the targeted dividend is the random assignment of the income threshold, which determines eligibility to the dividend. The first-stage for the non-targeted dividend exploits instead the discontinuity in the win/lose feedback when the net gain switches from negative to positive.} }.\\end{table}', 
-   gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_additional_res, fixed=TRUE), fixed=TRUE), fixed=TRUE), collapse=' ')
+cat(Table_additional_res, sep = '\n', file = "../tables/alternative_si.tex")
+# write_clip(sub("\\multicolumn{6}{c}{", "", gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} See results of main specifications, Table \\vref{results_private_benefits}. As in the latter Table, the source of exogenous variation in the belief used in first-stages for the targeted dividend is the random assignment of the income threshold, which determines eligibility to the dividend. The first-stage for the non-targeted dividend exploits instead the discontinuity in the win/lose feedback when the net gain switches from negative to positive.} }.\\end{table}', 
+#    gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_additional_res, fixed=TRUE), fixed=TRUE), fixed=TRUE), collapse=' ')
 
 
 # Table E.2
@@ -871,7 +876,7 @@ iv_sio5
 
 f_stats_sio <- sprintf("%.1f", round(c(iv_sio1$diagnostics[1,3], iv_sio2$diagnostics[1,3], iv_sio3$diagnostics[1,3], iv_sio4$diagnostics[1,3], iv_sio5$diagnostics[1,3]), 1))
 Table_sio <- stargazer(tsls2_sio1, tsls2_sio2, tsls2_sio3, tsls2_sio4, tsls2_sio5, 
-       title="Effect of self-interest on acceptance: the role of incomes", #star.cutoffs = c(0.1, 1e-5, 1e-30),
+       title="Effect of self-interest on acceptance: the role of incomes", #star.cutoffs = c(0.1, 1e-5, 1e-30), 
        covariate.labels = c("Believes does not lose ($G^T$)", "Income above 35th percentile ($\\un_{I > p35}$)", "$G^T \\times \\un_{I > p35}$", "Initial tax Acceptance ($A^0$)"),
        omit.table.layout = 'n', star.cutoffs = NA, model.names = FALSE, dep.var.labels = "Acceptance of Tax \\& Targeted Dividend ($A^T$)",
        dep.var.caption = "", header = FALSE, 
@@ -883,8 +888,9 @@ Table_sio <- stargazer(tsls2_sio1, tsls2_sio2, tsls2_sio3, tsls2_sio4, tsls2_sio
             c("Sub-sample: [p10; p60]; Controls: Policy assigned", "\\checkmark  ", "\\checkmark ", "\\checkmark", "\\checkmark ", "\\checkmark"),
             c("Effective F-Statistic", f_stats_sio)),
        no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser", "ll", "aic"), label="tab:alternative_sio")
-write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} See results of main specifications, Table \\vref{results_private_benefits}. The source of exogenous variation in the belief used in the first-stage is the random assignment of the income threshold, which determines eligibility to the dividend.} }\\end{table}', 
-   gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_sio, fixed=TRUE), fixed=TRUE), collapse=' ')
+cat(Table_sio, sep = '\n', file = "../tables/alternative_sio.tex")
+# write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} See results of main specifications, Table \\vref{results_private_benefits}. The source of exogenous variation in the belief used in the first-stage is the random assignment of the income threshold, which determines eligibility to the dividend.} }\\end{table}', 
+#    gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_sio, fixed=TRUE), fixed=TRUE), collapse=' ')
 
 
 # Table E.3
@@ -929,10 +935,10 @@ Table_eea <- stargazer(ols_eea2, ols_eea2, tsls2_eea3, ols_eea4, title="Effect o
                        se = list(liml_ee1$sd, NULL, NULL, NULL),
                        add.lines = list(c("Instruments: info E.E. \\& C.C. ", "\\checkmark ", "", "\\checkmark ", ""),
                                         c("Controls: Socio-demo, other motives ", "\\checkmark  ", "\\checkmark ", "\\checkmark ", "\\checkmark "),
-                                        c("Effective F-Statistic", "", "", f_stats_ee[2], "")), 
+                                        c("Effective F-Statistic", "", "", f_stats_ee[2], "")), out = "../tables/eea.tex",
                        no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser", "ll", "aic"), label="tab:eea")
-write_clip(gsub('(1) & (2) & (3) & (4)', '(A1) & (A2) & (A3) & (A4)', gsub('\\end{table}', "} {\\footnotesize \\parbox[t]{1.05\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Standard errors are reported in parentheses. The list of controls can be found in Appendix \\ref{set_controls}, and the main results in Table \\vref{tab:ee}. As in the latter Table, the dependent variable corresponds to either initial approval (answer ``Yes'' to support of the policy) or acceptance (answer not ``No''). The first stage exploits the information randomly displayed about climate change (C.C.) and the effectiveness of carbon taxation (E.E.) as exogenous instruments.}}\\end{table}",  # first stage results in Table \\vref{first_stage_environmental_effectiveness}.
-                    gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_eea, fixed=TRUE), fixed=TRUE), fixed=TRUE), collapse=' ')
+# write_clip(gsub('(1) & (2) & (3) & (4)', '(A1) & (A2) & (A3) & (A4)', gsub('\\end{table}', "} {\\footnotesize \\parbox[t]{1.05\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Standard errors are reported in parentheses. The list of controls can be found in Appendix \\ref{set_controls}, and the main results in Table \\vref{tab:ee}. As in the latter Table, the dependent variable corresponds to either initial approval (answer ``Yes'' to support of the policy) or acceptance (answer not ``No''). The first stage exploits the information randomly displayed about climate change (C.C.) and the effectiveness of carbon taxation (E.E.) as exogenous instruments.}}\\end{table}",  # first stage results in Table \\vref{first_stage_environmental_effectiveness}.
+#                     gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_eea, fixed=TRUE), fixed=TRUE), fixed=TRUE), collapse=' ')
 
 
 ##### Appendix F. Controls variables #####
@@ -1046,13 +1052,13 @@ heterogeneity_update <- stargazer(base_winner, reg_update_base, reg_update_diplo
                            dep.var.labels = c("Correct updating ($U$)"), dep.var.caption = "", header = FALSE, 
                            keep = c('Constant', '.*Gagnant.*', 'taxe_approbation', '^gain', 'I\\(gain', 'diplome4', 'retraites', 'actifs', 'etudiants', 'Gilets_jaunes'), 
                            order = c('Constant', '.*Gagnant.*', 'taxe_approbation', '^gain', 'I\\(gain', 'diplome4', 'retraites', 'actifs', 'etudiants', 'Gilets_jaunes'),
-                           omit.table.layout = 'n', star.cutoffs = NA,
+                           omit.table.layout = 'n', star.cutoffs = NA, out = "../tables/heterogeneity_update.tex",
                            add.lines = list(c("Includes ``pessimistic winners''", "\\checkmark", "\\checkmark", "\\checkmark", "\\checkmark", ""), 
                                             c("Includes ``optimistic losers''", "\\checkmark", "\\checkmark", "\\checkmark", "", "\\checkmark"), 
                                             c("Controls: socio-demo, politics, estimated gains", "", "\\checkmark", "\\checkmark", "\\checkmark", "\\checkmark")),
                            no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser"), label="tab:heterogeneity_update")
-write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{13.5cm}{\\linespread{1.2}\\selectfont \\textsc{Note:} Omitted variables are \\textit{Unemployed/Inactive} and \\textit{Yellow Vests: opposes}. The list of controls can be found in Appendix \\ref{set_controls}.} }\\end{table}', 
-                gsub('\\begin{tabular}{@', '\\resizebox{.90\\columnwidth}{!}{ \\begin{tabular}{@', heterogeneity_update, fixed=TRUE), fixed=TRUE), collapse=' ')
+# write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{13.5cm}{\\linespread{1.2}\\selectfont \\textsc{Note:} Omitted variables are \\textit{Unemployed/Inactive} and \\textit{Yellow Vests: opposes}. The list of controls can be found in Appendix \\ref{set_controls}.} }\\end{table}', 
+#                 gsub('\\begin{tabular}{@', '\\resizebox{.90\\columnwidth}{!}{ \\begin{tabular}{@', heterogeneity_update, fixed=TRUE), fixed=TRUE), collapse=' ')
 
 
 ##### Appendix K. Relation between support and belief in progressivity #####
@@ -1102,11 +1108,11 @@ summary(ols_prog5) # sum of all effects True: all :0.935. P+G: 0.599. P+E:0.709.
 ols_prog6 <- lm(taxe_info_approbation=='Oui' ~ progressif + (prog_na == 'NA'), weights=s$weight, data=s)
 summary(ols_prog6)
 
-Table_prog <- stargazer(ols_prog1, ols_prog2, ols_prog3, logit_prog4, ols_prog5, ols_prog6,
+Table_prog <- stargazer(ols_prog1, ols_prog2, ols_prog3, logit_prog4, ols_prog5, ols_prog6, 
   title="Support of the Tax \\& Dividend in function of beliefs in each motive.",
           covariate.labels = c("Progressivity $(P)$", "Income ($I$, in k\\euro{}/month)", "Winner $(G^1)$", "Effective $(E)$", "Initial tax Acceptance ($A^0$)", "$(G^1 \\times E)$",
                                "Interaction: winner $(P \\times G^1)$", "Interaction: effective $(P \\times E)$", "Interaction: income $(P \\times I)$",
-                               "$P \\times G^1 \\times E$"), # "Constant",
+                               "$P \\times G^1 \\times E$"), # "Constant", 
           dep.var.labels = c("Broad definition of variables (\\textit{not ``No''})", "Strict definitions (\\textit{``Yes''})"),
           dep.var.caption = "Support (after information)", header = FALSE, star.cutoffs = NA, omit.table.layout = 'n',
           keep = c("progressi", "gagnant", 'effective', 'Revenu$', 'tax_acceptance'), 
@@ -1115,8 +1121,9 @@ Table_prog <- stargazer(ols_prog1, ols_prog2, ols_prog3, logit_prog4, ols_prog5,
           se = list(NULL, NULL, NULL, logit_prog4_margins[,2], NULL, NULL),
           add.lines = list(c("Controls: Socio-demo", "\\checkmark ", "\\checkmark ", " ", "", "\\checkmark ", "")),
           no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser", "ll", "aic"), label="tab:progressivity")
-write_clip(gsub('\\end{table}', "} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Standard errors are reported in parentheses. For logit, average marginal effects are reported and not coefficients. The list of controls can be found in Appendix \\ref{set_controls}. Covariates and dependent variables refer either to broad (1-4) or strict (5-6) definitions of the beliefs, where strict dummies do not cover ``PNR'' or ``Unaffected'' answers. See discussion in the main text, Section \\vref{sec:effect_progressivity}.}} \\end{table} ",
-                gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_prog, fixed=TRUE), fixed=TRUE), collapse=' ')
+cat(Table_prog, sep = '\n', file = "../tables/progressivity.tex")
+# write_clip(gsub('\\end{table}', "} {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Standard errors are reported in parentheses. For logit, average marginal effects are reported and not coefficients. The list of controls can be found in Appendix \\ref{set_controls}. Covariates and dependent variables refer either to broad (1-4) or strict (5-6) definitions of the beliefs, where strict dummies do not cover ``PNR'' or ``Unaffected'' answers. See discussion in the main text, Section \\vref{sec:effect_progressivity}.}} \\end{table} ",
+#                 gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_prog, fixed=TRUE), fixed=TRUE), collapse=' ')
 
 # (1) Average effect of Progressivity (on not No, i.e. acceptance), other things equal: 0.274
 0.223 + 0.183 * wtd.mean(s$gagnant_info_categorie!='Perdant', weights = s$weight) + 0.172 * wtd.mean(s$taxe_efficace!='Non', weights = s$weight) -
@@ -1220,7 +1227,7 @@ summary(reg_update_base_q)
 
 f_stats_7min <- sprintf("%.1f", round(c(iv_si0$diagnostics[1,3], iv_si10$diagnostics[1,3], iv_siq$diagnostics[1,3]), 1))
 
-Table_robustesse_exclude <- stargazer(tsls2_si0, tsls2_si10, tsls2_siq, reg_update_base_0, reg_update_base_10, reg_update_base_q,
+Table_robustesse_exclude <- stargazer(tsls2_si0, tsls2_si10, tsls2_siq, reg_update_base_0, reg_update_base_10, reg_update_base_q, out = "../tables/7min.tex",
                                      title="Robustness of main results to the exclusion of answers of poor quality.", model.names = F, model.numbers = FALSE, #star.cutoffs = c(0.1, 1e-5, 1e-30), # "Diploma: Bachelor or above", 
                                      column.labels = c("all", "> 11 min", "not flagged", "all", "> 11 min", "not flagged"), 
                                      covariate.labels = c("Believes does not lose (.53)", "Winner, before feedback (.55)", "Initial tax: Approves (.18)"),
@@ -1232,8 +1239,8 @@ Table_robustesse_exclude <- stargazer(tsls2_si0, tsls2_si10, tsls2_siq, reg_upda
                                                       c("Effective F-statistic", f_stats_7min, "", "", ""),
                                                       c("Whole sample size", rep(c(nrow(sl), nrow(ss), nrow(sq)),2))),
                                      no.space=TRUE, intercept.bottom=FALSE, intercept.top=TRUE, omit.stat=c("adj.rsq", "f", "ser", "ll", "aic"), label="tab:7min")
-write_clip(gsub('\\end{table}', ' } {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Two of our main results are checked on three alternative sampling restrictions: (1) inclusion of answers < 7 min, (2) exclusion of the 10\\% of answers < 11 min, (3) exclusion of flagged (inconsistent) respondents. Weights have been recalculated for each sample. Estimates on the original sample are reported next to variable name. See the original Tables for more details. Correlation between our main variables of interest and response time or being flagged is always below 3\\%. Standard errors are reported in parentheses. }}  \\end{table} ',
-                gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_robustesse_exclude, fixed=TRUE), fixed=TRUE), collapse=' ')
+# write_clip(gsub('\\end{table}', ' } {\\footnotesize \\parbox[t]{\\textwidth}{\\linespread{1.2}\\selectfont \\textsc{Note:} Two of our main results are checked on three alternative sampling restrictions: (1) inclusion of answers < 7 min, (2) exclusion of the 10\\% of answers < 11 min, (3) exclusion of flagged (inconsistent) respondents. Weights have been recalculated for each sample. Estimates on the original sample are reported next to variable name. See the original Tables for more details. Correlation between our main variables of interest and response time or being flagged is always below 3\\%. Standard errors are reported in parentheses. }}  \\end{table} ',
+#                 gsub('\\begin{tabular}{@', '\\makebox[\\textwidth][c]{ \\begin{tabular}{@', Table_robustesse_exclude, fixed=TRUE), fixed=TRUE), collapse=' ')
 
 # Note of Table L.1
 cor(s$duree, s$tax_approval) # -0.01
@@ -1246,4 +1253,6 @@ cor(s$mauvaise_qualite > 0, s$gain) # -0.007
 
 # clean heaviest objects
 rm(list=ls()[grepl("tsls|ols|logit_|iv_|reg_|iv._", ls()) & !grepl("variables", ls())])
+
+save.image("after_papier.RData")
 

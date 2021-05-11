@@ -1,0 +1,29 @@
+
+\begin{table}[!htbp] \centering 
+  \caption{Effect of self-interest on acceptance} 
+  \label{results_private_benefits} 
+\begin{tabular}{@{\extracolsep{5pt}}lcccc} 
+\\[-1.8ex]\hline 
+\hline \\[-1.8ex] 
+ & \multicolumn{4}{c}{Acceptance (``Yes'' or ``Don't know'' to policy support)} \\ 
+\cline{2-5} 
+\\[-1.8ex] & \multicolumn{3}{c}{Targeted Dividend ($A^T$)} & After Feedback ($A^F$) \\ 
+ & \multicolumn{2}{c}{\textit{IV: random target/eligibility}} & $OLS$ & \textit{IV: discontinuity in feedback} \\ 
+\\[-1.8ex] & (1) & (2) & (3) & (4)\\ 
+\hline \\[-1.8ex] 
+ Believes does not lose ($G$) & 0.534 & 0.476 & 0.438 & 0.644 \\ 
+  & (0.132) & (0.106) & (0.014) & (0.170) \\ 
+  Initial tax Acceptance ($A^0$) & 0.356 & 0.354 & 0.361 & 0.420 \\ 
+  & (0.041) & (0.034) & (0.026) & (0.074) \\ 
+ \hline \\[-1.8ex] 
+Controls: Incomes (piecewise continuous) & \checkmark  & \checkmark   & \checkmark  & \checkmark \\ 
+\quad estimated gains, socio-demo, other motives  &  &  &  &  \\ 
+Controls: Policy assigned & \checkmark  & \checkmark  & \checkmark   &  \\ 
+Sub-sample & [p10; p60] &  &  & $\left| \widehat{\gamma}\right|<50$ \\ 
+Effective F-Statistic & 15.6 & 23.8 &  & 21.3 \\ 
+Observations & 1,969 & 3,002 & 3,002 & 757 \\ 
+R$^{2}$ & 0.320 & 0.308 & 0.472 & 0.541 \\ 
+\hline 
+\hline \\[-1.8ex] 
+\end{tabular} 
+\end{table} 

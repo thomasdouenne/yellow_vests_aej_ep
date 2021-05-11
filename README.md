@@ -7,7 +7,7 @@ Repository Project ID: openicpsr-128143
 - Adrien Fabre, ETH Zürich (D-MTEC), Zürichberstrasse 18, 8032 Zürich, Switzerland (email: fabre.adri1@gmail.com)
 
 # Summary:
-- The code is in R and Python.
+- The code is in R and Python 2.
 - The main file is code/papier.R: it enables researchers to reproduce all the empirical findings of the paper section by section.
 - In order to run this script, a few preliminary steps are needed. They are described below.
 
@@ -121,3 +121,12 @@ URL: https://www.insee.fr/fr/statistiques/3547386?sommaire=3547646#titre-bloc-20
 ## CEREN
 Fully available. It consists of the following quote: “3,4 millions de résidences principales sont encore chauffées au fioul en France. Cela représente 12 % des foyers”.
 URL: https://www.lesechos.fr/industrie-services/energie-environnement/le-chauffage-au-fioul-devient-de-plus-en-plus-cher-147372
+
+
+# Computational requirements
+Software requirement: R, Python 2.
+The following software and language versions were used: RStudio 1.3.1073; R 4.0.3; Python 2.7.
+Tables are generated without their Notes by default. To generate them with the Notes, uncomment the "write_clip(...)" lines after "stargazer(...)" in papier.R; noting this requires an interactive (GUI) environment like RStudio.
+A particular version (0.99.22) of the R package "memisc" is needed. If another version of "memisc" is installed, packages_functions.R will automatically uninstall it and install the appropriate version; using the package "installr" that runs only on Windows.
+Length necessary to install all packages (on a powerful cloud machine): 15 min.
+Length of necessary computation (on a powerful laptop): 2 min.
