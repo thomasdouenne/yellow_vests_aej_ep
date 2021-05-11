@@ -889,6 +889,7 @@ write_clip(gsub('\\end{table}', '} {\\footnotesize \\parbox[t]{\\textwidth}{\\li
 
 # Table E.3
 # (A1) not No ~ Yes, LIML: 64* p.p.
+s$taxe_efficace.hat <- as.numeric(s$taxe_efficace=='Oui')
 liml_ee1 <- ivmodelFormula(as.formula(paste("tax_acceptance ~ ", paste(variables_reg_ee, collapse = ' + '), "+ taxe_efficace.hat | ", paste(variables_reg_ee, collapse = ' + '), " + apres_modifs + info_CC")), data = s)
 liml_ee1
 
